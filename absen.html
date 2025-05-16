@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi Tenaga Medis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #e30613;
+      --primary-dark: #c00511;
+      --primary-light: #ffebec;
+      --secondary: #2d3748;
+      --secondary-light: #4a5568;
+      --light: #f8f9fa;
+      --dark: #1a202c;
+      --gray: #edf2f7;
+      --border: #e2e8f0;
+      --success: #38a169;
+      --warning: #dd6b20;
+      --error: #e53e3e;
+      --info: #3182ce;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1.8rem 0;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      border-bottom: 4px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-icon {
+      font-size: 2.2rem;
+      color: white;
+      background: rgba(255, 255, 255, 0.15);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      background: linear-gradient(to right, white, #f8f9fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-subtext {
+      font-size: 0.9rem;
+      font-weight: 300;
+      opacity: 0.9;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main Content */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding: 3rem 0;
+    }
+
+    @media (min-width: 992px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: none;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(227, 6, 19, 0.03) 0%, rgba(192, 5, 17, 0.03) 100%);
+      z-index: 0;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .card-header i {
+      font-size: 1.3rem;
+      background: rgba(255, 255, 255, 0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-body {
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.7rem;
+      font-weight: 500;
+      color: var(--secondary-light);
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(227, 6, 19, 0.1);
+      background-color: white;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e30613' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      gap: 10px;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .btn:hover::after {
+      transform: translateX(0);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(227, 6, 19, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(227, 6, 19, 0.3);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary) 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(45, 55, 72, 0.2);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(45, 55, 72, 0.25);
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .dashboard-title {
+      font-size: 1.6rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px var(--border);
+      margin-top: 2rem;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 800px;
+    }
+
+    .table th {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-weight: 500;
+      padding: 1.2rem 1.5rem;
+      text-align: left;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .table th:first-child {
+      border-top-left-radius: 10px;
+    }
+
+    .table th:last-child {
+      border-top-right-radius: 10px;
+    }
+
+    .table td {
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 0.95rem;
+    }
+
+    .table tr:nth-child(even) {
+      background-color: var(--gray);
+    }
+
+    .table tr:hover {
+      background-color: #e2e8f0;
+    }
+
+    .table tr:last-child td:first-child {
+      border-bottom-left-radius: 10px;
+    }
+
+    .table tr:last-child td:last-child {
+      border-bottom-right-radius: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-success {
+      background-color: rgba(56, 161, 105, 0.15);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background-color: rgba(221, 107, 32, 0.15);
+      color: var(--warning);
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 1rem 1.8rem;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(227, 6, 19, 0.25);
+      font-weight: 500;
+      display: none;
+      z-index: 1000;
+      animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-left: 5px solid white;
+      max-width: 380px;
+      backdrop-filter: blur(5px);
+    }
+
+    .notification i {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .notification.show {
+      display: flex;
+      align-items: center;
+    }
+
+    .notification.hide {
+      animation: slideOut 0.3s ease-in;
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    .notification-success {
+      background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+    }
+
+    .notification-error {
+      background: linear-gradient(135deg, var(--error) 0%, #c53030 100%);
+    }
+
+    .notification-warning {
+      background: linear-gradient(135deg, var(--warning) 0%, #c05621 100%);
+    }
+
+    .notification-info {
+      background: linear-gradient(135deg, var(--info) 0%, #2b6cb0 100%);
+    }
+
+    /* Admin Section */
+    .admin-section {
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 2px dashed var(--border);
+    }
+
+    .admin-section .card-header {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    }
+
+    /* Utility Classes */
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-3 {
+      margin-top: 1.8rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 1.8rem;
+    }
+
+    /* Floating Animation */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .logo {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .card-header {
+        padding: 1.2rem;
+        font-size: 1.1rem;
+      }
+      
+      .card-body {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <div class="logo-icon floating">
+          <i class="fas fa-hospital-alt"></i>
+        </div>
+        <div>
+          <div class="logo-text">Medical Attendance</div>
+          <div class="logo-subtext">Absensi Tenaga Medis</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="main-grid">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-user-clock"></i>
+          Absensi
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="nama" class="form-label">Nama Lengkap</label>
+            <input type="text" id="nama" class="form-control" placeholder="Masukkan nama lengkap">
+          </div>
+
+          <div class="form-group">
+            <label for="jabatan" class="form-label">Jabatan</label>
+            <select id="jabatan" class="form-control">
+              <option value="">-- Pilih Jabatan --</option>
+              <option>Direktur Utama</option>
+              <option>Wakil Direktur</option>
+              <option>Kepala Dokter</option>
+              <option>Dokter Spesialis</option>
+              <option>Dokter Bedah</option>
+              <option>Dokter Umum</option>
+              <option>Senior Perawat</option>
+              <option>Junior Perawat</option>
+              <option>Magang</option>
+            </select>
+          </div>
+
+          <div class="btn-group">
+            <button onclick="mulaiShift()" class="btn btn-primary btn-block">
+              <i class="fas fa-sign-in-alt"></i> Mulai Shift
+            </button>
+            <button onclick="akhiriShift()" class="btn btn-primary btn-block">
+              <i class="fas fa-sign-out-alt"></i> Akhiri Shift
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Section Separated -->
+    <div class="admin-section">
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-lock"></i>
+          Akses Admin
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="adminPass" class="form-label">Password Admin</label>
+            <input type="password" id="adminPass" class="form-control" placeholder="Masukkan password admin">
+          </div>
+          
+          <button onclick="bukaDashboard()" class="btn btn-secondary btn-block">
+            <i class="fas fa-tachometer-alt"></i> Buka Dashboard Admin
+          </button>
+
+          <div id="dashboard" class="dashboard">
+            <div class="dashboard-header">
+              <h2 class="dashboard-title">
+                <i class="fas fa-chart-line"></i> Dashboard Kehadiran
+              </h2>
+              <div class="badge">
+                Total: <span id="totalRecords">0</span> Data
+              </div>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Jabatan</th>
+                    <th>Jam Masuk</th>
+                    <th>Jam Keluar</th>
+                    <th>Status</th>
+                    <th>Durasi</th>
+                  </tr>
+                </thead>
+                <tbody id="dataTabel"></tbody>
+              </table>
+            </div>
+            
+            <div class="btn-group mt-3">
+              <button onclick="eksporData()" class="btn btn-secondary">
+                <i class="fas fa-file-export"></i> Ekspor Data
+              </button>
+              <button onclick="hapusData()" class="btn btn-secondary">
+                <i class="fas fa-trash-alt"></i> Hapus Data
+              </button>
+              <button onclick="keluarDashboard()" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="notification" id="notif"></div>
+
+  <script>
+    const passwordAdmin = "admin123";
+    let absensiData = JSON.parse(localStorage.getItem("absensiData") || "[]");
+
+    function showNotif(msg, type = 'info', icon = null) {
+      const notif = document.getElementById("notif");
+      let iconClass = 'info-circle';
+      
+      // Set icon based on type if not explicitly provided
+      if (!icon) {
+        switch(type) {
+          case 'success': iconClass = 'check-circle'; break;
+          case 'error': iconClass = 'times-circle'; break;
+          case 'warning': iconClass = 'exclamation-triangle'; break;
+          case 'info': iconClass = 'info-circle'; break;
+          default: iconClass = icon || 'info-circle';
+        }
+      } else {
+        iconClass = icon;
+      }
+      
+      notif.innerHTML = `<i class="fas fa-${iconClass}"></i> ${msg}`;
+      notif.className = `notification show notification-${type}`;
+      
+      setTimeout(() => {
+        notif.classList.add("hide");
+        setTimeout(() => notif.classList.remove("show", "hide"), 300);
+      }, 3500);
+    }
+
+    function mulaiShift() {
+      const nama = document.getElementById("nama").value.trim();
+      const jabatan = document.getElementById("jabatan").value;
+      
+      if (!nama || !jabatan) {
+        showNotif("Nama dan Jabatan wajib diisi!", "error");
+        return;
+      }
+
+      // Check if there's an active shift for this person
+      const activeShift = absensiData.find(d => 
+        d.nama === nama && 
+        d.jabatan === jabatan && 
+        !d.jamKeluar
+      );
+      
+      if (activeShift) {
+        showNotif("Anda memiliki shift aktif yang belum diakhiri!", "warning");
+        return;
+      }
+
+      const jamMasuk = new Date();
+      absensiData.push({ 
+        nama, 
+        jabatan, 
+        jamMasuk, 
+        jamKeluar: null 
+      });
+      
+      localStorage.setItem("absensiData", JSON.stringify(absensiData));
+      showNotif(`Shift berhasil dimulai untuk ${nama}`, "success", "clock");
+      
+      // Reset form
+      document.getElementById("nama").value = "";
+      document.getElementById("jabatan").value = "";
+    }
+
+    function akhiriShift() {
+      const nama = document.getElementById("nama").value.trim();
+      const jabatan = document.getElementById("jabatan").value;
+      const sekarang = new Date();
+
+      if (!nama || !jabatan) {
+        showNotif("Nama dan Jabatan wajib diisi!", "error");
+        return;
+      }
+
+      const entryIndex = absensiData.findIndex(d => 
+        d.nama === nama && 
+        d.jabatan === jabatan && 
+        !d.jamKeluar
+      );
+      
+      if (entryIndex === -1) {
+        showNotif("Shift tidak ditemukan atau sudah diakhiri.", "warning");
+        return;
+      }
+      
+      absensiData[entryIndex].jamKeluar = sekarang;
+      localStorage.setItem("absensiData", JSON.stringify(absensiData));
+      showNotif(`Shift berhasil diakhiri untuk ${nama}`, "success", "clock");
+    }
+
+    function bukaDashboard() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass !== passwordAdmin) {
+        showNotif("Password admin salah!", "error");
+        return;
+      }
+
+      document.getElementById("dashboard").style.display = "block";
+      renderTabel();
+      showNotif("Dashboard admin berhasil dibuka", "success", "lock-open");
+    }
+
+    function keluarDashboard() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("adminPass").value = "";
+      showNotif("Anda telah keluar dari Dashboard", "info", "lock");
+    }
+
+    function renderTabel() {
+      const tbody = document.getElementById("dataTabel");
+      tbody.innerHTML = "";
+
+      // Update total records count
+      document.getElementById("totalRecords").textContent = absensiData.length;
+
+      if (absensiData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center">Tidak ada data absensi</td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Sort by latest first
+      const sortedData = [...absensiData].sort((a, b) => new Date(b.jamMasuk) - new Date(a.jamMasuk));
+
+      sortedData.forEach(item => {
+        const row = document.createElement("tr");
+        const masuk = new Date(item.jamMasuk);
+        const keluar = item.jamKeluar ? new Date(item.jamKeluar) : null;
+        let total = "-";
+        let status = '<span class="badge badge-warning">Aktif</span>';
+
+        if (keluar) {
+          const diffMs = keluar - masuk;
+          const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+          const diffMin = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+          total = `${diffHrs} jam ${diffMin} menit`;
+          status = '<span class="badge badge-success">Selesai</span>';
+        }
+
+        row.innerHTML = `
+          <td>${item.nama}</td>
+          <td>${item.jabatan}</td>
+          <td>${masuk.toLocaleString()}</td>
+          <td>${keluar ? keluar.toLocaleString() : "-"}</td>
+          <td>${status}</td>
+          <td>${total}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function hapusData() {
+      if (!confirm("Apakah Anda yakin ingin menghapus semua data absensi? Tindakan ini tidak dapat dibatalkan.")) {
+        return;
+      }
+      
+      absensiData = [];
+      localStorage.removeItem("absensiData");
+      renderTabel();
+      showNotif("Semua data berhasil dihapus", "success", "trash-alt");
+    }
+
+    function eksporData() {
+      if (absensiData.length === 0) {
+        showNotif("Tidak ada data untuk diekspor", "warning");
+        return;
+      }
+      
+      // Convert to CSV
+      let csv = "Nama,Jabatan,Jam Masuk,Jam Keluar,Durasi\n";
+      
+      absensiData.forEach(item => {
+        const masuk = new Date(item.jamMasuk);
+        const keluar = item.jamKeluar ? new Date(item.jamKeluar) : null;
+        let total = "-";
+
+        if (keluar) {
+          const diffMs = keluar - masuk;
+          const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+          const diffMin = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+          total = `${diffHrs} jam ${diffMin} menit`;
+        }
+
+        csv += `"${item.nama}","${item.jabatan}","${masuk.toLocaleString()}","${keluar ? keluar.toLocaleString() : '-'}","${total}"\n`;
+      });
+      
+      // Create download link
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `absensi_medis_${new Date().toISOString().slice(0,10)}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showNotif("Data berhasil diekspor ke CSV", "success", "file-export");
+    }
+  </script>
+</body>
+</html>

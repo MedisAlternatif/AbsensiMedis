@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Absensi Medis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .btn-success:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .duty-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .status-card {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            color: white;
+        }
+
+        .weekly-summary {
+            background: linear-gradient(135deg, #38b2ac, #319795);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .current-time {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .duty-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Sistem Absensi Medis</h1>
+            <p>Sistem Manajemen Kehadiran Tenaga Medis</p>
+            <div class="current-time" id="currentTime"></div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('attendance')">Absensi</button>
+            <button class="nav-tab" onclick="showTab('dashboard')">Dashboard Admin</button>
+        </div>
+
+        <!-- Attendance Tab -->
+        <div id="attendanceTab" class="tab-content">
+            <div class="card">
+                <h2>📋 Form Absensi</h2>
+                <form id="attendanceForm">
+                    <div class="form-group">
+                        <label for="name">Nama Lengkap:</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="position">Jabatan:</label>
+                        <select id="position" required>
+                            <option value="">Pilih Jabatan</option>
+                            <option value="Magang">Magang</option>
+                            <option value="Perawat">Perawat</option>
+                            <option value="Co.As">Co.As</option>
+                            <option value="Dokter Umum">Dokter Umum</option>
+                            <option value="Dokter Spesialis">Dokter Spesialis</option>
+                            <option value="Wakil Direktur">Wakil Direktur</option>
+                            <option value="Direktur Utama">Direktur Utama</option>
+                        </select>
+                    </div>
+
+                    <div class="duty-buttons">
+                        <button type="button" class="btn btn-success" onclick="markAttendance('on')">
+                            🟢 ON DUTY
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="markAttendance('off')">
+                            🔴 OFF DUTY
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="status-card" id="statusCard" style="display: none;">
+                <h3 id="statusMessage"></h3>
+                <p id="statusTime"></p>
+            </div>
+        </div>
+
+        <!-- Dashboard Admin Tab -->
+        <div id="dashboardTab" class="tab-content hidden">
+            <div class="card admin-panel">
+                <h2>🔐 Dashboard Admin</h2>
+                <p>Masukkan password untuk mengakses dashboard admin</p>
+                
+                <div class="form-group">
+                    <label for="adminPassword">Password Admin:</label>
+                    <input type="password" id="adminPassword" placeholder="Masukkan password admin">
+                </div>
+                
+                <button class="btn btn-primary" onclick="accessAdminDashboard()">🔓 Akses Dashboard Admin</button>
+            </div>
+
+            <div id="adminContent" class="hidden">
+                <div class="weekly-summary">
+                    <h3>📈 Ringkasan Mingguan</h3>
+                    <div id="weeklySummary"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Data Absensi Terbaru</h3>
+                    <div class="table-container">
+                        <table id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Jabatan</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Data Lengkap Kehadiran</h3>
+                    <div class="table-container">
+                        <table id="fullAttendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Jabatan</th>
+                                    <th>Total Jam Kerja Minggu Ini</th>
+                                    <th>Status Terakhir</th>
+                                    <th>Waktu Terakhir</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fullAttendanceTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script>
+        // Global data storage
+        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+        let userSessions = JSON.parse(localStorage.getItem('userSessions')) || {};
+
+        // Update current time
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Update dashboard when switching to it
+            if (tabName === 'dashboard') {
+                // Dashboard now requires admin access, don't auto-update
+                return;
+            }
+        }
+
+        // Mark attendance
+        function markAttendance(status) {
+            const name = document.getElementById('name').value.trim();
+            const position = document.getElementById('position').value;
+            
+            if (!name || !position) {
+                alert('Harap isi nama dan pilih jabatan terlebih dahulu!');
+                return;
+            }
+
+            const now = new Date();
+            const attendanceRecord = {
+                id: Date.now(),
+                name: name,
+                position: position,
+                status: status === 'on' ? 'ON DUTY' : 'OFF DUTY',
+                timestamp: now.toISOString(),
+                date: now.toLocaleDateString('id-ID'),
+                time: now.toLocaleTimeString('id-ID')
+            };
+
+            // Handle user sessions for calculating work hours
+            const userKey = `${name}_${position}`;
+            
+            if (status === 'on') {
+                userSessions[userKey] = {
+                    ...userSessions[userKey],
+                    currentSession: {
+                        startTime: now.getTime(),
+                        name: name,
+                        position: position
+                    }
+                };
+            } else if (status === 'off' && userSessions[userKey]?.currentSession) {
+                const session = userSessions[userKey].currentSession;
+                const workDuration = now.getTime() - session.startTime;
+                
+                if (!userSessions[userKey].weeklyHours) {
+                    userSessions[userKey].weeklyHours = 0;
+                }
+                
+                userSessions[userKey].weeklyHours += workDuration;
+                userSessions[userKey].lastOffDuty = now.getTime();
+                delete userSessions[userKey].currentSession;
+            }
+
+            attendanceData.push(attendanceRecord);
+            
+            // Save to localStorage
+            localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+            localStorage.setItem('userSessions', JSON.stringify(userSessions));
+
+            // Show status message
+            const statusCard = document.getElementById('statusCard');
+            const statusMessage = document.getElementById('statusMessage');
+            const statusTime = document.getElementById('statusTime');
+            
+            statusMessage.textContent = `${name} - ${attendanceRecord.status}`;
+            statusTime.textContent = `${attendanceRecord.date} ${attendanceRecord.time}`;
+            statusCard.style.display = 'block';
+
+            // Clear form
+            document.getElementById('attendanceForm').reset();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            const tableBody = document.getElementById('attendanceTableBody');
+            tableBody.innerHTML = '';
+
+            // Show last 10 records
+            const recentRecords = attendanceData.slice(-10).reverse();
+            
+            recentRecords.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.name}</td>
+                    <td>${record.position}</td>
+                    <td><span style="color: ${record.status === 'ON DUTY' ? '#48bb78' : '#f56565'}; font-weight: bold;">${record.status}</span></td>
+                    <td>${record.time}</td>
+                    <td>${record.date}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Access admin dashboard
+        function accessAdminDashboard() {
+            const adminPassword = document.getElementById('adminPassword').value.trim();
+            
+            // Password admin (bisa diganti sesuai kebutuhan)
+            const correctPassword = "admin123"; // Ganti password ini sesuai kebutuhan
+            
+            if (!adminPassword) {
+                alert('Harap masukkan password admin!');
+                return;
+            }
+            
+            if (adminPassword !== correctPassword) {
+                alert('Password salah! Akses ditolak.');
+                document.getElementById('adminPassword').value = '';
+                return;
+            }
+            
+            document.getElementById('adminContent').classList.remove('hidden');
+            document.getElementById('adminPassword').value = '';
+            updateAdminDashboard();
+            
+            // Tampilkan pesan sukses
+            alert('Akses berhasil! Selamat datang di Dashboard Admin.');
+        }
+
+        // Update admin dashboard
+        function updateAdminDashboard() {
+            updateWeeklySummary();
+            updateDashboard();
+            updateFullAttendanceTable();
+        }
+
+        // Calculate weekly hours
+        function calculateWeeklyHours(userKey) {
+            const user = userSessions[userKey];
+            if (!user) return 0;
+            
+            let totalHours = user.weeklyHours || 0;
+            
+            // Add current session if user is on duty
+            if (user.currentSession) {
+                const now = new Date().getTime();
+                totalHours += (now - user.currentSession.startTime);
+            }
+            
+            return totalHours;
+        }
+
+        // Update weekly summary
+        function updateWeeklySummary() {
+            const summaryDiv = document.getElementById('weeklySummary');
+            const userStats = {};
+            
+            // Group by users
+            Object.keys(userSessions).forEach(userKey => {
+                const session = userSessions[userKey];
+                const totalMs = calculateWeeklyHours(userKey);
+                const totalHours = Math.floor(totalMs / (1000 * 60 * 60));
+                const totalMinutes = Math.floor((totalMs % (1000 * 60 * 60)) / (1000 * 60));
+                
+                const [name, position] = userKey.split('_');
+                userStats[userKey] = {
+                    name: name,
+                    position: position,
+                    hours: totalHours,
+                    minutes: totalMinutes,
+                    isOnDuty: !!session.currentSession
+                };
+            });
+            
+            let summaryHTML = '<h4>Total Jam Kerja Minggu Ini:</h4>';
+            Object.values(userStats).forEach(user => {
+                summaryHTML += `
+                    <p><strong>${user.name}</strong> (${user.position}): ${user.hours} jam ${user.minutes} menit 
+                    ${user.isOnDuty ? '<span style="color: #90EE90;">● ON DUTY</span>' : '<span style="color: #FFB6C1;">● OFF DUTY</span>'}</p>
+                `;
+            });
+            
+            summaryDiv.innerHTML = summaryHTML;
+        }
+
+        // Update full attendance table
+        function updateFullAttendanceTable() {
+            const tableBody = document.getElementById('fullAttendanceTableBody');
+            tableBody.innerHTML = '';
+            
+            const userMap = new Map();
+            
+            // Get latest record for each user
+            attendanceData.forEach(record => {
+                const userKey = `${record.name}_${record.position}`;
+                userMap.set(userKey, record);
+            });
+            
+            userMap.forEach((record, userKey) => {
+                const totalMs = calculateWeeklyHours(userKey);
+                const totalHours = Math.floor(totalMs / (1000 * 60 * 60));
+                const totalMinutes = Math.floor((totalMs % (1000 * 60 * 60)) / (1000 * 60));
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.name}</td>
+                    <td>${record.position}</td>
+                    <td>${totalHours} jam ${totalMinutes} menit</td>
+                    <td><span style="color: ${record.status === 'ON DUTY' ? '#48bb78' : '#f56565'}; font-weight: bold;">${record.status}</span></td>
+                    <td>${record.date} ${record.time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Reset weekly hours every Monday
+        function checkAndResetWeeklyHours() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday
+            const lastReset = localStorage.getItem('lastWeeklyReset');
+            const oneWeekAgo = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+            
+            if (dayOfWeek === 1 && (!lastReset || parseInt(lastReset) < oneWeekAgo)) {
+                Object.keys(userSessions).forEach(userKey => {
+                    if (userSessions[userKey].weeklyHours) {
+                        userSessions[userKey].weeklyHours = 0;
+                    }
+                });
+                localStorage.setItem('userSessions', JSON.stringify(userSessions));
+                localStorage.setItem('lastWeeklyReset', now.getTime().toString());
+            }
+        }
+
+        // Initialize
+        checkAndResetWeeklyHours();
+    </script>
+</body>
+</html>
